@@ -1,3 +1,4 @@
 admin-venv
 *.pyc
 mydb.sqlite
+plan.txt
