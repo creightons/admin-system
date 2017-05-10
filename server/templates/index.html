@@ -1,4 +1,13 @@
 {% extends 'layout.html' %}
 {% block body %}
-	<div>Hello World</div>
+	<h1>Admin System</h1>
+	<form action='/login' method='POST'>
+		<label>username</label>
+		<input name='username' type='text'>
+		<br>
+		<label>password</label>
+		<input name='password' type='password'>
+		<br>
+		<input type='submit' value='Login'>
+	</form>
 {% endblock %}
