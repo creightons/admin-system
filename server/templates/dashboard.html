@@ -2,5 +2,22 @@
 {% block body %}
 	<h1>Dashboard</h1>
 	<div>Welcome to the dashboard</div>
+	<h2>Users</h2>
+	<ul>
+	{% for username in user_list %}
+		<li>{{username}}</li>
+	{% else %}
+		<li>None</li>
+	{% endfor %}
+	</ul>
+	<h2>Organization</h2>
+	<ul>
+	{% for name in organization_list %}
+		<li>{{name}}</li>
+	{% else %}
+		<li>None</li>
+	{% endfor %}
+	</ul>
+
 	<a href='/logout'>Logout</a>
 {% endblock %}

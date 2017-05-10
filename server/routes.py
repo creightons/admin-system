@@ -1,5 +1,5 @@
 from flask import render_template, request, session, redirect
-from models import User
+from models import User, Organization
 from main import app
 from middleware import is_authorized
 
@@ -30,4 +30,13 @@ def apply_routes(app):
 	@app.route('/dashboard', methods = ['GET'])
 	@is_authorized
 	def dashboard():
-		return render_template('dashboard.html')
+		users = User.query.all()
+		organizations = Organization.query.all()
+
+		user_list = [ user.username for user in users ]
+		organization_list = [ organization.name for organization in organizations ]
+		return render_template(
+			'dashboard.html',
+			user_list = user_list,
+			organization_list = organization_list
+		)
