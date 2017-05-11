@@ -1,0 +1,13 @@
+.sidebar {
+	width: $sidebar-width;
+	position: fixed;
+	top: $header-height;
+	left: 0;
+	bottom: 0;
+	padding: $spacing-700;
+	background-color: $secondary;
+	color: $secondary-contrast;
+	@include box-shadow();
+
+	font-size: $font-700;
+}

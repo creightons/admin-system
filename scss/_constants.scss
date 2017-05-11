@@ -1,0 +1,27 @@
+// Font Sizes
+$font-900: 48px;
+$font-700: 32px;
+$font-500: 26px;
+$font-300: 16px;
+
+// Layout Sizes
+$sidebar-width: 350px;
+$header-height: 100px;
+
+$spacing-900: 30px;
+$spacing-700: 20px;
+$spacing-500: 15px;
+$spacing-300: 10px;
+$spacing-100: 5px;
+
+// Colors
+$primary: #EF4836;
+$primary-contrast: #fff;
+$secondary: #19B5FE;
+$secondary-contrast: #fff;
+
+// Mixins
+
+@mixin box-shadow() {
+	box-shadow: 0px 11px 14px 0px rgba(0,0,0,0.29);
+}

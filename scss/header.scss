@@ -1,0 +1,13 @@
+.header {
+	width: 100%;
+	height: $header-height;
+	background-color: $primary;
+	padding: 0 $spacing-700;
+	@include box-shadow();
+}
+
+.header__title {
+	font-size: $font-900;
+	line-height: $header-height;
+	color: $primary-contrast;
+}
