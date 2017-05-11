@@ -1,0 +1,25 @@
+{
+  "name": "admin-system",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "watch:css": "nodemon -e scss -x \"npm run build:css\" ",
+    "build:css": "node-sass scss/index.scss --source-map-embed server/static/build.css"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/creightons/admin-system.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/creightons/admin-system/issues"
+  },
+  "homepage": "https://github.com/creightons/admin-system#readme",
+  "dependencies": {
+    "node-sass": "4.5.2",
+    "nodemon": "1.11.0"
+  }
+}

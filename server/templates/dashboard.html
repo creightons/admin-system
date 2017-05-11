@@ -1,5 +1,11 @@
 {% extends 'layout.html' %}
-{% block body %}
+{% import "macros.html" as macros %}
+
+{% block header %}
+	{{ macros.header() }}
+{% endblock %}
+
+{% block content %}
 	<h1>Dashboard</h1>
 	<div>Welcome to the dashboard</div>
 	<h2>Users</h2>
@@ -8,6 +14,7 @@
 		<li>{{username}}</li>
 	{% else %}
 		<li>None</li>
+
 	{% endfor %}
 	</ul>
 	<h2>Organization</h2>
@@ -20,4 +27,8 @@
 	</ul>
 
 	<a href='/logout'>Logout</a>
+{% endblock %}'
+
+{% block sidebar %}
+	{{ macros.sidebar() }}
 {% endblock %}

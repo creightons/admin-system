@@ -2,3 +2,5 @@ admin-venv
 *.pyc
 mydb.sqlite
 plan.txt
+node_modules
+server/static/build.css
