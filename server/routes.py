@@ -40,3 +40,8 @@ def apply_routes(app):
 			user_list = user_list,
 			organization_list = organization_list
 		)
+
+	@app.route('/organizations', methods = ['GET'])
+	def organizations():
+		return render_template('organizations.html')
+

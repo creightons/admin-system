@@ -5,7 +5,7 @@ $font-500: 26px;
 $font-300: 16px;
 
 // Layout Sizes
-$sidebar-width: 350px;
+$sidebar-width: 250px;
 $header-height: 100px;
 
 $spacing-900: 30px;
@@ -15,10 +15,11 @@ $spacing-300: 10px;
 $spacing-100: 5px;
 
 // Colors
-$primary: #EF4836;
-$primary-contrast: #fff;
-$secondary: #19B5FE;
-$secondary-contrast: #fff;
+$primary: #EF4836;					// Blue
+$primary-contrast: #fff;			// White
+$secondary: #19B5FE;				// Red
+$secondary-contrast: #fff;			// White
+$component-background: #BFBFBF;		// Gray
 
 // Mixins
 

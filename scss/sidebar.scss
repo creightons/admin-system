@@ -8,6 +8,16 @@
 	background-color: $secondary;
 	color: $secondary-contrast;
 	@include box-shadow();
+}
 
-	font-size: $font-700;
+.sidebar__link {
+	color: $secondary-contrast;
+	font-size: $font-500;
+	cursor: pointer;
+	text-decoration: none;
+	padding: $spacing-300;
+
+	&:hover {
+		color: $primary;
+	}
 }

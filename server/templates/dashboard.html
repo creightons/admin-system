@@ -1,9 +1,4 @@
-{% extends 'layout.html' %}
-{% import "macros.html" as macros %}
-
-{% block header %}
-	{{ macros.header() }}
-{% endblock %}
+{% extends 'dashboard_layout.html' %}
 
 {% block content %}
 	<h1>Dashboard</h1>
@@ -28,7 +23,3 @@
 
 	<a href='/logout'>Logout</a>
 {% endblock %}'
-
-{% block sidebar %}
-	{{ macros.sidebar() }}
-{% endblock %}

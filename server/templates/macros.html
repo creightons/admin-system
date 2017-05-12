@@ -1,16 +1,14 @@
 {% macro page_link(name, url) %}
-	<a href='{{url}}'>
-		<li class='sidebar__link'>
-			{{name}}
-		</li>
+	<a href='{{url}}' class='sidebar__link'>
+		<li>{{name}}</li>
 	</a>
-
 {% endmacro %}
 
 {% macro sidebar() %}
 	<aside class='sidebar'>
 		<ul class='sidebar__links'>
 			{{ page_link('Dashboard', '/dashboard') }}
+			{{ page_link('Organizations', '/organizations') }}
 		</ul>
 	</aside>
 {% endmacro %}
