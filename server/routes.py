@@ -1,7 +1,9 @@
 from flask import render_template, request, session, redirect
+from database import db
 from models import User, Organization
 from main import app
 from middleware import is_authorized
+from forms import NewOrganizationForm
 
 def apply_routes(app):
 
@@ -41,7 +43,21 @@ def apply_routes(app):
 			organization_list = organization_list
 		)
 
-	@app.route('/organizations', methods = ['GET'])
-	def organizations():
-		return render_template('organizations.html')
+	@app.route('/organizations', methods = ['GET', 'POST'])
+	def organizations_page():
+		form = NewOrganizationForm()
+		if form.validate_on_submit():
+			new_organization = Organization(request.form['name'])
+			db.session.add(new_organization)
+			db.session.commit()
+			return redirect('/dashboard')
+
+		organizations = Organization.query.all()
+		organization_list = [ org.name for org in organizations ]
+
+		return render_template(
+			'organizations.html',
+			organizations = organization_list,
+			form = form
+		)
 

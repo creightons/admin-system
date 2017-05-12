@@ -1,5 +1,21 @@
 {% extends 'dashboard_layout.html' %}
 
 {% block content %}
-	<div>hello world</div>
+	<h2>Current Organizations</h2>
+	<ul>
+	{% for name in organizations %}
+		<li>{{ name }}</li>
+	{% else %}
+		<li>None</li>
+	{% endfor %}
+	</ul>
+	<br>
+	<form action='/organizations' method='POST'>
+		<h2>Create a new organization</h2>
+		<label for='name'>Name</label>
+		<input type='text' id='name' name='name' />
+		{{ form.csrf_token }}
+		<br>
+		<input type='submit' value='Add' />
+	</form>
 {% endblock %}
