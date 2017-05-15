@@ -1,3 +1,5 @@
+from __future__ import print_function
+import sys
 from flask import render_template, request, session, redirect
 from database import db
 from models import User, Organization
@@ -46,6 +48,10 @@ def apply_routes(app):
 	@app.route('/organizations', methods = ['GET', 'POST'])
 	def organizations_page():
 		form = NewOrganizationForm()
+		if request.method == 'POST':
+			print ('request form: ', request.form['name'] == '', file=sys.stderr)
+			print ('errors = ', form.name.errors , file=sys.stderr)
+
 		if form.validate_on_submit():
 			new_organization = Organization(request.form['name'])
 			db.session.add(new_organization)
@@ -53,7 +59,8 @@ def apply_routes(app):
 			return redirect('/dashboard')
 
 		organizations = Organization.query.all()
-		organization_list = [ org.name for org in organizations ]
+		organization_list = [ { 'name': org.name, 'link': '/edit-organization/' + str(org.id) }
+			for org in organizations ]
 
 		return render_template(
 			'organizations.html',

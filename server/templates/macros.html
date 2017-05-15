@@ -18,3 +18,37 @@
 		<h1 class='header__title'>Admin Sys</h1>
 	</header>
 {% endmacro %}
+
+{#
+	item_list(title, items)
+	--------------
+	Returns a list of items showing item names and links to edit pages.
+	Requires a list of dictionaries with:
+
+	name - String
+	link - String
+#}
+{% macro item_list(title, models) %}
+	<div class='item-list'>
+		<h2 class='item-list__title'>{{ title }}</h2>
+		<ul class='item-list__list'>
+			<li class='item-list__item--header'>
+				<span class='item-list__header-value'>Name</span>
+			</li>
+		{% for item_details in models %}
+			<li class='item-list__item'>
+				<span class='item-list__item-name'>
+					{{ item_details.name }}
+				</span>
+				<a class='item-list__link' href='{{ item_details.link }}'>
+					<span class='item-list__link-button'>Edit</span>
+				</a>
+			</li>
+		{% else %}
+			<li class='item-list__item'>
+				<span class='item-list__name'>None</span>
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+{% endmacro %}

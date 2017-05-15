@@ -15,11 +15,13 @@ $spacing-300: 10px;
 $spacing-100: 5px;
 
 // Colors
-$primary: #EF4836;					// Blue
-$primary-contrast: #fff;			// White
-$secondary: #19B5FE;				// Red
-$secondary-contrast: #fff;			// White
-$component-background: #BFBFBF;		// Gray
+$primary: #EF4836;						// Red
+$primary-weaker: hsla(6, 85%, 77%, 1);
+$primary-contrast: #fff;				// White
+$secondary: #19B5FE;					// Blue
+$secondary-contrast: #fff;				// White
+$component-background: #BFBFBF;			// Gray
+$text-color: #000;						// Black
 
 // Mixins
 
