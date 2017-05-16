@@ -48,9 +48,7 @@ def apply_routes(app):
 	@app.route('/organizations', methods = ['GET', 'POST'])
 	def organizations_page():
 		form = NewOrganizationForm()
-		if request.method == 'POST':
-			print ('request form: ', request.form['name'] == '', file=sys.stderr)
-			print ('errors = ', form.name.errors , file=sys.stderr)
+		fields = [ form.name, form.csrf_token ]
 
 		if form.validate_on_submit():
 			new_organization = Organization(request.form['name'])
@@ -65,6 +63,22 @@ def apply_routes(app):
 		return render_template(
 			'organizations.html',
 			organizations = organization_list,
+			fields = fields,
 			form = form
 		)
 
+	@app.route('/add-organization', methods=['GET', 'POST'])
+	def add_organization():
+		form = NewOrganizationForm()
+		fields = [ form.name, form.csrf_token ]
+
+		if form.validate_on_submit():
+			new_organization = Organization(request.form['name'])
+			db.session.add(new_organization)
+			db.session.commit()
+			return redirect('/organizations')
+
+		return render_template(
+			'add_organization.html',
+			fields = fields
+		)

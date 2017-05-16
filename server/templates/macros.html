@@ -19,8 +19,16 @@
 	</header>
 {% endmacro %}
 
+{% macro link_button(text, url) %}
+	<a class='link-button' href='{{ url }}'>{{ text }}</a>
+{% endmacro %}
+
+{% macro section_title(title) %}
+		<h2 class='section-title'>{{ title }}</h2>
+{% endmacro %}
+
 {#
-	item_list(title, items)
+	item_list(items)
 	--------------
 	Returns a list of items showing item names and links to edit pages.
 	Requires a list of dictionaries with:
@@ -28,27 +36,51 @@
 	name - String
 	link - String
 #}
-{% macro item_list(title, models) %}
-	<div class='item-list'>
-		<h2 class='item-list__title'>{{ title }}</h2>
-		<ul class='item-list__list'>
-			<li class='item-list__item--header'>
-				<span class='item-list__header-value'>Name</span>
-			</li>
-		{% for item_details in models %}
-			<li class='item-list__item'>
-				<span class='item-list__item-name'>
-					{{ item_details.name }}
-				</span>
-				<a class='item-list__link' href='{{ item_details.link }}'>
-					<span class='item-list__link-button'>Edit</span>
-				</a>
-			</li>
-		{% else %}
-			<li class='item-list__item'>
-				<span class='item-list__name'>None</span>
-			</li>
+{% macro item_list(items) %}
+	<ul class='item-list__list'>
+		<li class='item-list__item--header'>
+			<span class='item-list__header-value'>Name</span>
+		</li>
+	{% for item_details in items %}
+		<li class='item-list__item'>
+			<span class='item-list__item-name'>
+				{{ item_details.name }}
+			</span>
+			<a class='item-list__link' href='{{ item_details.link }}'>
+				<span class='item-list__link-button'>Edit</span>
+			</a>
+		</li>
+	{% else %}
+		<li class='item-list__item'>
+			<span class='item-list__name'>None</span>
+		</li>
+	{% endfor %}
+	</ul>
+{% endmacro %}
+
+{% macro form_input(field) %}
+	{% if field.id == 'csrf_token' %}
+		{{ field }}
+	{% else %}
+		<div class='form__row'>
+			{{ field.label(class_ = 'form__label') }}
+			{{ field(class_ = 'form__input') }}
+			{% if field.errors %}
+				{% for error in field.errors %}
+					<div class='form__error'>*{{ error }}</div>
+				{% endfor %}
+			{% endif %}
+		</div>
+	{% endif %}
+{% endmacro %}
+
+{% macro form(fields, url) %}
+	<form class='form' action='{{ url }}' method='POST'>
+		{% for field in fields %}
+			{{ form_input(field) }}
 		{% endfor %}
-		</ul>
-	</div>
+		<div class='form__button-row'>
+			<input class='form__button' type='submit' value='Submit' />
+		</div>
+	</form>
 {% endmacro %}

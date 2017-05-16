@@ -1,0 +1,49 @@
+.form {
+	max-width: $form-width;
+	background-color: $secondary-weaker;
+	margin-left: auto;
+	margin-right: auto;
+	padding: $spacing-700;
+	border: none;
+}
+
+.form__row {
+	margin-bottom: $spacing-300;
+}
+
+.form__label {
+	font-size: $font-300;
+	text-transform: lowercase;
+	font-weight: 700;
+}
+
+.form__input {
+	width: 100%;
+	padding: $spacing-100;
+	color: $secondary;
+	font-size: $font-300;	
+	border: none;
+}
+
+.form__error {
+	color: $primary;
+	font-weight: 700;
+	text-align: right;
+}
+
+.form__button-row {
+	display: flex;
+	justify-content: center;
+}
+
+.form__button {
+	text-align: center;
+	padding: $spacing-300;
+	font-size: $font-300;
+	background-color: $secondary;
+	color: $secondary-contrast;
+	margin: 0 auto;
+	border: none;
+	display: inline-block;
+	cursor: pointer;
+}

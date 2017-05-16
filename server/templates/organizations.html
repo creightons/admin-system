@@ -1,15 +1,7 @@
 {% extends 'dashboard_layout.html' %}
-{$ import 'macros.html' as mascros %} 
+{$ import 'macros.html' as macros %} 
 {% block content %}
-	{{ macros.item_list('Current Organizations', organizations) }}
-	<br>
-	<form action='/organizations' method='POST'>
-		<h2>Create a new organization</h2>
-		<label for='name'>Name</label>
-		<input type='text' id='name' name='name' />
-		{{ form.csrf_token }}
-		{{ form.name.errors }}
-		<br>
-		<input type='submit' value='Add' />
-	</form>
+	{{ macros.section_title('Current Organizations') }}
+	{{ macros.link_button('Add Organization', '/add-organization') }}
+	{{ macros.item_list(organizations) }}
 {% endblock %}
