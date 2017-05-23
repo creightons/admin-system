@@ -82,3 +82,33 @@ def apply_routes(app):
 			'add_organization.html',
 			fields = fields
 		)
+
+	@app.route('/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
+	def edit_organization(organization_id):
+		organization = Organization.query.filter_by(id = organization_id).first()
+
+		if organization == None:
+			return render_template('404.html')
+
+		form = NewOrganizationForm()
+		fields = [ form.name, form.csrf_token ]
+
+		if form.validate_on_submit():
+			updated_organization = Organization.query.filter_by(id = organization_id).update({
+				'name': form.name.data
+			})
+
+			db.session.commit()
+
+			return redirect('/organizations')
+
+		form.name.data = organization.name
+		fields = [ form.name, form.csrf_token ]
+
+		postback_url = '/edit-organization/' + str(organization_id)
+
+		return render_template(
+			'edit_organization.html',
+			fields = fields,
+			postback_url = postback_url
+		)
