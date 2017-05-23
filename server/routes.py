@@ -5,7 +5,7 @@ from database import db
 from models import User, Organization
 from main import app
 from middleware import is_authorized
-from forms import NewOrganizationForm
+from forms import NewOrganizationForm, UserForm
 
 def apply_routes(app):
 
@@ -109,6 +109,29 @@ def apply_routes(app):
 
 		return render_template(
 			'edit_organization.html',
+			fields = fields,
+			postback_url = postback_url
+		)
+
+
+	@app.route('/users', methods = ['GET'])
+	def show_users():
+		users = User.query.all()
+		user_list = [ { 'name': u.username , 'link': '/edit-user/' + str(u.id) }
+			for u in users ]
+		return render_template('users.html', users = user_list)
+
+
+	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
+	def edit_user(user_id):
+		user = User.query.filter_by(id = user_id).first()
+		form = UserForm()
+		fields = [ form.username, form.csrf_token ]
+		form.username.data = user.username
+		postback_url = '/edit-user/' + str(user_id)
+
+		return render_template(
+			'edit_user.html',
 			fields = fields,
 			postback_url = postback_url
 		)
