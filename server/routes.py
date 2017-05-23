@@ -124,10 +124,29 @@ def apply_routes(app):
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		user = User.query.filter_by(id = user_id).first()
 		form = UserForm()
-		fields = [ form.username, form.csrf_token ]
+		fields = [
+			form.username,
+			form.csrf_token,
+			form.first_name,
+			form.last_name,
+		]
+
+		if form.validate_on_submit():
+			User.query.filter_by(id = user_id).update({
+				'username': form.username.data,
+				'first_name': form.first_name.data,
+				'last_name': form.last_name.data,
+			})
+
+			db.session.commit()
+			return redirect('/users')
+
+		user = User.query.filter_by(id = user_id).first()
 		form.username.data = user.username
+		form.first_name.data = user.first_name
+		form.last_name.data = user.last_name
+
 		postback_url = '/edit-user/' + str(user_id)
 
 		return render_template(

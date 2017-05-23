@@ -8,3 +8,5 @@ class NewOrganizationForm(Form):
 
 class UserForm(Form):
 	username = StringField('Username', validators = [InputRequired()])
+	first_name = StringField('First Name', validators = [InputRequired()])
+	last_name = StringField('Last Name', validators = [InputRequired()])
