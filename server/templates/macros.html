@@ -21,7 +21,7 @@
 {% endmacro %}
 
 {% macro link_button(text, url) %}
-	<a class='link-button' href='{{ url }}'>{{ text }}</a>
+	<a class='button' href='{{ url }}'>{{ text }}</a>
 {% endmacro %}
 
 {% macro section_title(title) %}
@@ -47,9 +47,16 @@
 			<span class='item-list__item-name'>
 				{{ item_details.name }}
 			</span>
-			<a class='item-list__link' href='{{ item_details.link }}'>
-				<span class='item-list__link-button'>Edit</span>
-			</a>
+			<div class='item-list__button-row'>
+				<a class='item-list__link' href='{{ item_details.link }}'>
+					<button class='item-list__button {% if item_details.delete_link %} item-list--offset {% endif %}'>Edit</button>
+				</a>
+				{% if item_details.delete_link %}
+					<form method='POST' action='{{ item_details.delete_link }}'>
+						<button class='item-list__button' type='submit'>Delete</button>
+					</form>
+				{% endif %}
+			</div>
 		</li>
 	{% else %}
 		<li class='item-list__item'>

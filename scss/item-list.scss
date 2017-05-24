@@ -26,13 +26,28 @@
 	justify-content: center;
 }
 
+.item-list__button-row {
+	display: flex;
+}
+
 .item-list__link {
 	text-decoration: none;
 }
 
-.item-list__link-button {
+.item-list__button {
 	color: $primary-contrast;
 	background-color: $primary;
 	display: block;
 	padding: $spacing-300;
+	font-size: $font-300;
+	border: none;
+	cursor: none;
+
+	&:focus {
+		outline: none;
+	}
+}
+
+.item-list--offset {
+	margin-right: $spacing-300;
 }

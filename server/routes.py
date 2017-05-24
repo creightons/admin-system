@@ -57,8 +57,13 @@ def apply_routes(app):
 			return redirect('/dashboard')
 
 		organizations = Organization.query.all()
-		organization_list = [ { 'name': org.name, 'link': '/edit-organization/' + str(org.id) }
-			for org in organizations ]
+		organization_list = [
+			{
+				'name': org.name,
+				'link': '/edit-organization/' + str(org.id),
+				'delete_link': '/delete-organization/' + str(org.id),
+			} for org in organizations
+		]
 
 		return render_template(
 			'organizations.html',
@@ -82,6 +87,13 @@ def apply_routes(app):
 			'add_organization.html',
 			fields = fields
 		)
+
+	@app.route('/delete-organization/<int:organization_id>', methods = ['POST'])
+	def delete_organization(organization_id):
+		organization = Organization.query.filter_by(id = organization_id).first()
+		db.session.delete(organization)
+		db.session.commit()
+		return redirect('/organizations')
 
 	@app.route('/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
 	def edit_organization(organization_id):
