@@ -1,0 +1,9 @@
+{% extends 'dashboard_layout.html' %}
+{% import 'macros.html' as macros %}
+{% block content %}
+
+	{{ macros.section_title('Add User') }}
+	{{ macros.link_button('Back', '/users') }}
+	{{ macros.form(fields, '/add-user') }}
+
+{% endblock %}

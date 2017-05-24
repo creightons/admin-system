@@ -5,7 +5,7 @@ from database import db
 from models import User, Organization
 from main import app
 from middleware import is_authorized
-from forms import NewOrganizationForm, UserForm
+from forms import NewOrganizationForm, AddUserForm, EditUserForm
 
 def apply_routes(app):
 
@@ -72,7 +72,7 @@ def apply_routes(app):
 			form = form
 		)
 
-	@app.route('/add-organization', methods=['GET', 'POST'])
+	@app.route('/add-organization', methods = ['GET', 'POST'])
 	def add_organization():
 		form = NewOrganizationForm()
 		fields = [ form.name, form.csrf_token ]
@@ -88,6 +88,7 @@ def apply_routes(app):
 			fields = fields
 		)
 
+	
 	@app.route('/delete-organization/<int:organization_id>', methods = ['POST'])
 	def delete_organization(organization_id):
 		organization = Organization.query.filter_by(id = organization_id).first()
@@ -133,29 +134,56 @@ def apply_routes(app):
 			for u in users ]
 		return render_template('users.html', users = user_list)
 
+	@app.route('/add-user', methods = ['GET', 'POST'])
+	def add_user():
+		form = AddUserForm()
+		fields = [
+			form.username,
+			form.password,
+			form.first_name,
+			form.last_name,
+			form.csrf_token,
+		]
+
+		if form.validate_on_submit():
+			new_user = User(request.form['username'], request.form['password'])
+			new_user.first_name = request.form['first_name']
+			new_user.last_name = request.form['last_name']
+			db.session.add(new_user)
+			db.session.commit()
+			return redirect('/users')
+
+		return render_template('add_user.html', fields = fields)
+
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		form = UserForm()
+		form = EditUserForm()
 		fields = [
 			form.username,
+			form.password,
 			form.csrf_token,
 			form.first_name,
 			form.last_name,
 		]
 
 		if form.validate_on_submit():
-			User.query.filter_by(id = user_id).update({
-				'username': form.username.data,
-				'first_name': form.first_name.data,
-				'last_name': form.last_name.data,
-			})
+			updates = {}
+			updates['username'] = form.username.data
+			updates['first_name'] = form.first_name.data
+			updates['last_name'] = form.last_name.data
+
+			if form.password.data != '':
+				updates['password'] = form.password.data
+
+			User.query.filter_by(id = user_id).update(updates)
 
 			db.session.commit()
 			return redirect('/users')
 
 		user = User.query.filter_by(id = user_id).first()
 		form.username.data = user.username
+		form.password.data = user.password
 		form.first_name.data = user.first_name
 		form.last_name.data = user.last_name
 

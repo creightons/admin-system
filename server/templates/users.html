@@ -1,5 +1,7 @@
 {% extends "dashboard_layout.html" %}
 {$ import 'macros.html' as macros %}
 {% block content %}
+	{{ macros.section_title('Current Users') }}
+	{{ macros.link_button('Add User', '/add-user') }}
 	{{ macros.item_list(users) }}
 {% endblock %}
