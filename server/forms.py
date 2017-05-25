@@ -1,5 +1,5 @@
 from flask_wtf import Form
-from wtforms import StringField, PasswordField
+from wtforms import StringField, PasswordField, BooleanField, FieldList
 from wtforms.validators import InputRequired
 
 class NewOrganizationForm(Form):
@@ -10,6 +10,7 @@ class EditUserForm(Form):
 	password = PasswordField('New Password')
 	first_name = StringField('First Name')
 	last_name = StringField('Last Name')
+	organizations = FieldList(BooleanField('Org Name'))
 
 class AddUserForm(Form):
 	username = StringField('Username', validators = [InputRequired()])

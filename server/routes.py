@@ -158,13 +158,15 @@ def apply_routes(app):
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		form = EditUserForm()
+		data_in = { 'organizations': [ o.name for o in Organization.query.order_by('name').all() ] }
+		form = EditUserForm(data = data_in)
 		fields = [
 			form.username,
 			form.password,
 			form.csrf_token,
 			form.first_name,
 			form.last_name,
+			form.organizations,
 		]
 
 		if form.validate_on_submit():
@@ -186,8 +188,6 @@ def apply_routes(app):
 		form.password.data = user.password
 		form.first_name.data = user.first_name
 		form.last_name.data = user.last_name
-
-		postback_url = '/edit-user/' + str(user_id)
 
 		return render_template(
 			'edit_user.html',
