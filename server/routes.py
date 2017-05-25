@@ -189,6 +189,8 @@ def apply_routes(app):
 		form.first_name.data = user.first_name
 		form.last_name.data = user.last_name
 
+		postback_url = '/edit-user/' + str(user_id)
+
 		return render_template(
 			'edit_user.html',
 			fields = fields,
