@@ -4,6 +4,13 @@
 
 	{{ macros.section_title('Edit User') }}
 	{{ macros.link_button('Back', '/users') }}
-	{{ macros.form(fields, postback_url) }}
+	{% call macros.form_frame(postback_url) %}
+		{{ macros.form_input(form.csrf_token) }}
+		{{ macros.form_input(form.username) }}
+		{{ macros.form_input(form.first_name) }}
+		{{ macros.form_input(form.last_name) }}
+		{{ macros.form_input(form.password) }}
+		{{ macros.option_form_field_list(form.organizations) }}
+	{% endcall %}
 
 {% endblock %}

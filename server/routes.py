@@ -158,16 +158,9 @@ def apply_routes(app):
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		data_in = { 'organizations': [ o.name for o in Organization.query.order_by('name').all() ] }
-		form = EditUserForm(data = data_in)
-		fields = [
-			form.username,
-			form.password,
-			form.csrf_token,
-			form.first_name,
-			form.last_name,
-			form.organizations,
-		]
+		data = [ o.name for o in Organization.query.order_by('name').all() ]
+		data_dicts = [ { 'description': name, 'checkbox': True } for name in data ]
+		form = EditUserForm(organizations = data_dicts)
 
 		if form.validate_on_submit():
 			updates = {}
@@ -184,6 +177,7 @@ def apply_routes(app):
 			return redirect('/users')
 
 		user = User.query.filter_by(id = user_id).first()
+
 		form.username.data = user.username
 		form.password.data = user.password
 		form.first_name.data = user.first_name
@@ -191,8 +185,4 @@ def apply_routes(app):
 
 		postback_url = '/edit-user/' + str(user_id)
 
-		return render_template(
-			'edit_user.html',
-			fields = fields,
-			postback_url = postback_url
-		)
+		return render_template('edit_user.html', form = form, postback_url = postback_url)

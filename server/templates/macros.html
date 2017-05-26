@@ -82,11 +82,36 @@
 	{% endif %}
 {% endmacro %}
 
+{#
+	Renders a list of OptionForms. "fields" should be:
+
+	FieldList(FormField(OptionForm))
+#}
+{% macro option_form_field_list(fields) %}
+	<ul>
+	{% for form_field in fields %}
+		<li>
+			<label>{{ form_field.form.description.data }}</label>
+			{{ form_field.form.checkbox }}
+		</li>
+	{% endfor %}
+	</ul>
+{% endmacro %}
+
 {% macro form(fields, url) %}
 	<form class='form' action='{{ url }}' method='POST'>
 		{% for field in fields %}
 			{{ form_input(field) }}
 		{% endfor %}
+		<div class='form__button-row'>
+			<input class='form__button' type='submit' value='Submit' />
+		</div>
+	</form>
+{% endmacro %}
+
+{% macro form_frame(url) %}
+	<form class='form' action='{{ url }}' method='POST'>
+		{{ caller() }}
 		<div class='form__button-row'>
 			<input class='form__button' type='submit' value='Submit' />
 		</div>
