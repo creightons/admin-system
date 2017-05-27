@@ -7,6 +7,15 @@ from main import app
 from middleware import is_authorized
 from forms import NewOrganizationForm, AddUserForm, EditUserForm
 
+
+###################################
+# Constants
+###################################
+# If a user does not select to be part of an organization, they
+# will choose this option which means they are not in an organization
+NO_ORGANIZATION_ID = 0
+
+
 def apply_routes(app):
 
 	@app.route('/', methods = ['GET'])
@@ -137,6 +146,8 @@ def apply_routes(app):
 	@app.route('/add-user', methods = ['GET', 'POST'])
 	def add_user():
 		form = AddUserForm()
+		blank_choice = [ (NO_ORGANIZATION_ID, '(None)') ]
+		form.organization.choices = blank_choice + [ (o.id, o.name) for o in Organization.query.all() ]
 		fields = [
 			form.username,
 			form.password,
@@ -149,11 +160,21 @@ def apply_routes(app):
 			new_user = User(request.form['username'], request.form['password'])
 			new_user.first_name = request.form['first_name']
 			new_user.last_name = request.form['last_name']
+			if form.organization.data is not None:
+				new_user.organization_id = form.organization.data
+			else:
+				new_user.organization_id = None
+
 			db.session.add(new_user)
 			db.session.commit()
 			return redirect('/users')
 
-		return render_template('add_user.html', fields = fields)
+		return render_template(
+			'user_form.html',
+			title = 'Add User',
+			form = form,
+			postback_url = '/add-user'
+		)
 
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
@@ -163,9 +184,6 @@ def apply_routes(app):
 		user = User.query.filter_by(id = user_id).first()
 		postback_url = '/edit-user/' + str(user_id)
 
-		# If a user does not select to be part of an organization, they
-		# will choose this option which means they are not in an organization
-		NO_ORGANIZATION_ID = 0
 		blank_choice = [ (NO_ORGANIZATION_ID, '(None)') ]
 		form.organization.choices = blank_choice + [ (o.id, o.name) for o in Organization.query.all() ]
 
@@ -190,4 +208,9 @@ def apply_routes(app):
 		form.last_name.data = user.last_name
 		form.organization.data = user.organization_id or NO_ORGANIZATION_ID
 
-		return render_template('edit_user.html', form = form, postback_url = postback_url)
+		return render_template(
+			'user_form.html',
+			title = 'Edit User',
+			form = form,
+			postback_url = postback_url
+		)

@@ -49,3 +49,8 @@ class AddUserForm(FlaskForm):
 	password = PasswordField('Password', validators = [InputRequired()])
 	first_name = StringField('First Name', validators = [InputRequired()])
 	last_name = StringField('Last Name', validators = [InputRequired()])
+	organization = SelectField(
+		'Organization',
+		coerce = int,
+		validators = [InputRequired()]
+	)
