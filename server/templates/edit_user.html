@@ -1,16 +1,16 @@
 {% extends 'dashboard_layout.html' %}
-{% import 'macros.html' as macros %}
+{% from 'macros.html' import form_frame, link_button, section_title, form_input %}
 {% block content %}
 
-	{{ macros.section_title('Edit User') }}
-	{{ macros.link_button('Back', '/users') }}
-	{% call macros.form_frame(postback_url) %}
-		{{ macros.form_input(form.csrf_token) }}
-		{{ macros.form_input(form.username) }}
-		{{ macros.form_input(form.first_name) }}
-		{{ macros.form_input(form.last_name) }}
-		{{ macros.form_input(form.password) }}
-		{{ macros.option_form_field_list(form.organizations) }}
+	{{ section_title('Edit User') }}
+	{{ link_button('Back', '/users') }}
+	{% call form_frame(postback_url) %}
+		{{ form_input(form.csrf_token) }}
+		{{ form_input(form.username) }}
+		{{ form_input(form.first_name) }}
+		{{ form_input(form.last_name) }}
+		{{ form_input(form.password) }}
+		{{ form_input(form.organization) }}
 	{% endcall %}
 
 {% endblock %}

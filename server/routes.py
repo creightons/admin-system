@@ -158,15 +158,23 @@ def apply_routes(app):
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		data = [ o.name for o in Organization.query.order_by('name').all() ]
-		data_dicts = [ { 'description': name, 'checkbox': True } for name in data ]
-		form = EditUserForm(organizations = data_dicts)
+		form = EditUserForm()
+
+		user = User.query.filter_by(id = user_id).first()
+		postback_url = '/edit-user/' + str(user_id)
+
+		# If a user does not select to be part of an organization, they
+		# will choose this option which means they are not in an organization
+		NO_ORGANIZATION_ID = 0
+		blank_choice = [ (NO_ORGANIZATION_ID, '(None)') ]
+		form.organization.choices = blank_choice + [ (o.id, o.name) for o in Organization.query.all() ]
 
 		if form.validate_on_submit():
 			updates = {}
 			updates['username'] = form.username.data
 			updates['first_name'] = form.first_name.data
 			updates['last_name'] = form.last_name.data
+			updates['organization_id'] = form.organization.data
 
 			if form.password.data != '':
 				updates['password'] = form.password.data
@@ -174,15 +182,12 @@ def apply_routes(app):
 			User.query.filter_by(id = user_id).update(updates)
 
 			db.session.commit()
-			return redirect('/users')
-
-		user = User.query.filter_by(id = user_id).first()
+			return redirect(postback_url)
 
 		form.username.data = user.username
 		form.password.data = user.password
 		form.first_name.data = user.first_name
 		form.last_name.data = user.last_name
-
-		postback_url = '/edit-user/' + str(user_id)
+		form.organization.data = user.organization_id or NO_ORGANIZATION_ID
 
 		return render_template('edit_user.html', form = form, postback_url = postback_url)

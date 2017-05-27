@@ -1,6 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, HiddenField, \
-	FormField, FieldList
+from wtforms import StringField, PasswordField, BooleanField, SelectField
 from wtforms.validators import InputRequired
 
 class NewOrganizationForm(FlaskForm):
@@ -16,21 +15,34 @@ class BooleanSubField(BooleanField):
         else:
             self.data = bool(value)
 
-class OptionForm(FlaskForm):
-	description = HiddenField('Description')
-	checkbox = BooleanSubField('Member', default = False)
 
+# TODO: Use the commented out code as a model of implementing a multiselect
+# form with checkboxes.
+#
+#
+#class OptionForm(FlaskForm):
+#	description = HiddenField('Description')
+#	checkbox = BooleanSubField('Member', default = False)
+#
 # To add data to "organizations" when initializing an object from this class,
 # call this class as:
 #	form = EditUserForm(organizations = list_of_dicts)
 # where:
 #	list_of_dicts = [ { 'description': <str>, 'checkbox': <bool> }, ... ]
+#class EditUserForm(FlaskForm):
+#	username = StringField('Username', validators = [InputRequired()])
+#	password = PasswordField('New Password')
+#	first_name = StringField('First Name')
+#	last_name = StringField('Last Name')
+#	organizations = FieldList(FormField(OptionForm))
+#	organization =
+
 class EditUserForm(FlaskForm):
 	username = StringField('Username', validators = [InputRequired()])
 	password = PasswordField('New Password')
 	first_name = StringField('First Name')
 	last_name = StringField('Last Name')
-	organizations = FieldList(FormField(OptionForm))
+	organization = SelectField('Organization', coerce = int)
 
 class AddUserForm(FlaskForm):
 	username = StringField('Username', validators = [InputRequired()])

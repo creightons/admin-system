@@ -7,13 +7,20 @@ user_type_data = [
 ]
 
 user_data = [
-	{ 'username': 'user1', 'password': 'pass1', 'user_type_id': 2, 'organization_id': 1 },
-	{ 'username': 'user2', 'password': 'pass2', 'user_type_id': 2, 'organization_id': 2 },
+	{ 'username': 'user1', 'password': 'pass', 'user_type_id': 2, 'organization_id': None },
+	{ 'username': 'user2', 'password': 'pass', 'user_type_id': 2, 'organization_id': 2 },
+	{ 'username': 'user3', 'password': 'pass', 'user_type_id': 2, 'organization_id': 2 },
+	{ 'username': 'user4', 'password': 'pass', 'user_type_id': 2, 'organization_id': 3 },
+	{ 'username': 'user5', 'password': 'pass', 'user_type_id': 2, 'organization_id': 1 },
+	{ 'username': 'user6', 'password': 'pass', 'user_type_id': 2, 'organization_id': 4 },
+	{ 'username': 'user7', 'password': 'pass', 'user_type_id': 2, 'organization_id': 2 },
 ]
 
 organization_data = [
 	{ 'id': 1, 'name': 'Test Inc' },
 	{ 'id': 2, 'name': 'Sample Co' },
+	{ 'id': 3, 'name': 'Spelunker\' Union' },
+	{ 'id': 4, 'name': 'Data Denizens' },
 ]
 
 def add_users(db, users):
