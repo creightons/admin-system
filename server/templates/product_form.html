@@ -1,0 +1,13 @@
+{% extends 'dashboard_layout.html' %}
+{% from 'macros.html' import form_frame, link_button, section_title, form_input %}
+{% block content %}
+
+	{{ section_title(title) }}
+	{{ link_button('Back', '/products') }}
+	{% call form_frame(postback_url) %}
+		{{ form_input(form.csrf_token) }}
+		{{ form_input(form.name) }}
+		{{ form_input(form.category) }}
+	{% endcall %}
+
+{% endblock %}

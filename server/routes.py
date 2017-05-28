@@ -2,10 +2,11 @@ from __future__ import print_function
 import sys
 from flask import render_template, request, session, redirect
 from database import db
-from models import User, Organization
+from models import User, Organization, Category, Product
 from main import app
 from middleware import is_authorized
-from forms import NewOrganizationForm, AddUserForm, EditUserForm
+from forms import NewOrganizationForm, AddUserForm, EditUserForm, \
+	CategoryForm, ProductForm
 
 
 ###################################
@@ -14,6 +15,7 @@ from forms import NewOrganizationForm, AddUserForm, EditUserForm
 # If a user does not select to be part of an organization, they
 # will choose this option which means they are not in an organization
 NO_ORGANIZATION_ID = 0
+BLANK_CHOICE = [ (NO_ORGANIZATION_ID, '(None)') ]
 
 
 def apply_routes(app):
@@ -146,8 +148,7 @@ def apply_routes(app):
 	@app.route('/add-user', methods = ['GET', 'POST'])
 	def add_user():
 		form = AddUserForm()
-		blank_choice = [ (NO_ORGANIZATION_ID, '(None)') ]
-		form.organization.choices = blank_choice + [ (o.id, o.name) for o in Organization.query.all() ]
+		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]
 		fields = [
 			form.username,
 			form.password,
@@ -184,8 +185,7 @@ def apply_routes(app):
 		user = User.query.filter_by(id = user_id).first()
 		postback_url = '/edit-user/' + str(user_id)
 
-		blank_choice = [ (NO_ORGANIZATION_ID, '(None)') ]
-		form.organization.choices = blank_choice + [ (o.id, o.name) for o in Organization.query.all() ]
+		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]
 
 		if form.validate_on_submit():
 			updates = {}
@@ -211,6 +211,111 @@ def apply_routes(app):
 		return render_template(
 			'user_form.html',
 			title = 'Edit User',
+			form = form,
+			postback_url = postback_url
+		)
+
+
+	@app.route('/categories')
+	def show_categories():
+		categories = [
+			{
+				'name': c.name,
+				'link': '/edit-category/' + str(c.id),
+			} for c in Category.query.all()
+		]
+
+		return render_template('categories.html', categories = categories)
+
+
+	@app.route('/add-category', methods = ['GET', 'POST'])
+	def add_category():
+		form = CategoryForm()
+
+		if form.validate_on_submit():
+			category = Category(form.name.data)
+			db.session.add(category)
+			db.session.commit()
+			return redirect('/categories')
+
+		return render_template(
+			'category_form.html',
+			title = 'Add Category',
+			form = form,
+			postback_url = '/add-category'
+		)
+
+
+	@app.route('/edit-category/<int:category_id>', methods = ['GET', 'POST'])
+	def edit_category(category_id):
+		form = CategoryForm()
+		category = Category.query.filter_by(id = category_id).first()
+		postback_url = '/edit-category/' + str(category_id)
+
+		if form.validate_on_submit():
+			category.name = form.name.data
+			db.session.commit()
+			return redirect('/categories')
+
+
+		form.name.data = category.name
+		return render_template(
+			'category_form.html',
+			title = 'Edit Category',
+			form = form,
+			postback_url = postback_url
+		)
+
+
+	@app.route('/products')
+	def show_products():
+		products = [
+			{
+				'name': p.name,
+				'link': '/edit-product/' + str(p.id),
+			} for p in Product.query.all()
+		]
+
+		return render_template('products.html', products = products)
+
+	@app.route('/add-product', methods = ['GET', 'POST'])
+	def add_product():
+		form = ProductForm()
+		form.category.choices = [ (c.id, c.name) for c in Category.query.all() ]
+
+		if form.validate_on_submit():
+			product = Product(form.name.data, form.category.data)
+			db.session.add(product)
+			db.session.commit()
+			return redirect('/products')
+
+		return render_template(
+			'product_form.html',
+			title = 'Add Product',
+			form = form,
+			postback_url = '/add-product'
+		)
+
+
+	@app.route('/edit-product/<int:product_id>', methods = ['GET', 'POST'])
+	def edit_product(product_id):
+		form = ProductForm()
+		form.category.choices = [ (c.id, c.name) for c in Category.query.all() ]
+		product = Product.query.filter_by(id = product_id).first()
+		postback_url = '/edit-product/' + str(product_id)
+
+		if form.validate_on_submit():
+			product.name = form.name.data
+			product.category_id = form.category.data
+			db.session.commit()
+			return redirect('/products')
+
+		form.name.data = product.name
+		form.category.data = product.category_id
+
+		return render_template(
+			'product_form.html',
+			title = 'Edit Product',
 			form = form,
 			postback_url = postback_url
 		)

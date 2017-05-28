@@ -1,0 +1,7 @@
+{% extends 'dashboard_layout.html' %}
+{% from 'macros.html' import section_title, link_button, item_list %} 
+{% block content %}
+	{{ section_title('Categories') }}
+	{{ link_button('Add Category', '/add-category') }}
+	{{ item_list(categories) }}
+{% endblock %}

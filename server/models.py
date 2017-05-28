@@ -36,3 +36,20 @@ class Organization(db.Model):
 
 	def __init__(self, name):
 		self.name = name
+
+class Product(db.Model):
+	id = db.Column(db.Integer, primary_key = True, nullable = False)
+	name = db.Column(db.String(40), nullable = False)
+	category_id = db.Column(db.Integer, db.ForeignKey('category.id'))
+
+	def __init__(self, name, category_id):
+		self.name = name
+		self.category_id = category_id
+
+class Category(db.Model):
+	id = db.Column(db.Integer, primary_key = True, nullable = False)
+	name = db.Column(db.String(40), nullable = False)
+	products = db.relationship('Product', backref = 'category', lazy = 'dynamic')
+
+	def __init__(self, name):
+		self.name = name

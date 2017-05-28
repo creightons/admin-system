@@ -54,3 +54,14 @@ class AddUserForm(FlaskForm):
 		coerce = int,
 		validators = [InputRequired()]
 	)
+
+class CategoryForm(FlaskForm):
+	name = StringField('Name', validators = [InputRequired()])
+
+class ProductForm(FlaskForm):
+	name = StringField('Name', validators = [InputRequired()])
+	category = SelectField(
+		'Category',
+		coerce = int,
+		validators = [InputRequired()]
+	)

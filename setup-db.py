@@ -23,8 +23,34 @@ organization_data = [
 	{ 'id': 4, 'name': 'Data Denizens' },
 ]
 
-def add_users(db, users):
-	for row in users:
+category_data = [
+	{ 'id': 1, 'name': 'Computers' },
+	{ 'id': 2, 'name': 'Sports' },
+	{ 'id': 3, 'name': 'Furniture' },
+]
+
+product_data = [
+	{ 'id': 1, 'name': 'Macbook Pro',  'category_id': 1 },
+	{ 'id': 2, 'name': 'Zenbook', 'category_id': 1 },
+	{ 'id': 3, 'name': 'Surface Pro', 'category_id': 1 },
+	{ 'id': 4, 'name': 'Lenovo W530', 'category_id': 1 },
+	{ 'id': 5, 'name': 'Acer Laptop', 'category_id': 1 },
+	{ 'id': 6, 'name': 'Baseball Bat', 'category_id': 2 },
+	{ 'id': 7, 'name': 'Baseball Mitt', 'category_id': 2 },
+	{ 'id': 8, 'name': 'Basketball', 'category_id': 2 },
+	{ 'id': 9, 'name': 'Running Shoes', 'category_id': 2 },
+	{ 'id': 10, 'name': 'Hockey Stick', 'category_id': 2 },
+	{ 'id': 11, 'name': 'Skates', 'category_id': 2 },
+	{ 'id': 12, 'name': 'Desk', 'category_id': 3 },
+	{ 'id': 13, 'name': 'Chair', 'category_id': 3 },
+	{ 'id': 14, 'name': 'Couch', 'category_id': 3 },
+	{ 'id': 15, 'name': 'Book Case', 'category_id': 3 },
+	{ 'id': 16, 'name': 'Mantle', 'category_id': 3 },
+	{ 'id': 17, 'name': 'Sofa', 'category_id': 3 },
+]
+
+def add_users(db):
+	for row in user_data:
 		db.session.execute(
 			'''
 				insert into user(username, password, user_type_id, organization_id)
@@ -32,31 +58,41 @@ def add_users(db, users):
 			''',
 			row
 		)
-		#user = server.models.User(row['username'], row['password'], row['user_type'])
-		#db.session.add(user)
 
-def add_user_types(db, types):
-	for row in types:
-		#user_type = server.models.UserType(row['id'], row['description'])
-		#db.session.add(user_type)
+def add_user_types(db):
+	for row in user_type_data:
 		db.session.execute(
 			'insert into user_type(id, description) values( :id, :description )',
 			row
 		)
 
-def add_organizations(db, organizations):
-	for row in organizations:
-		#organization = server.models.Organization(row['description'])
-		#db.session.add(organization)
+def add_organizations(db):
+	for row in organization_data:
 		db.session.execute(
 			'insert into organization(id, name) values( :id, :name )',
 			row
 		)
 
+def add_categories(db):
+	for row in category_data:
+		db.session.execute(
+			'insert into category(id, name) values( :id, :name )',
+			row
+		)
+
+def add_products(db):
+	for row in product_data:
+		db.session.execute(
+			'insert into product(id, name, category_id) values( :id, :name, :category_id )',
+			row
+		)
+
 def seed_database(db):
-	add_users(db, user_data)
-	add_user_types(db, user_type_data)
-	add_organizations(db, organization_data)
+	add_users(db)
+	add_user_types(db)
+	add_organizations(db)
+	add_categories(db)
+	add_products(db)
 	db.session.commit()
 
 def main():
