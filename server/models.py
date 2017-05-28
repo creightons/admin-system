@@ -3,6 +3,14 @@ from database import db
 # UserType Constants (Type => ID)
 SUPERUSER = 1
 
+# Join table for Users and Permissions
+user_permissions = db.Table(
+	'user_permission',
+	db.Column('user_id', db.Integer, db.ForeignKey('user.id', ondelete = 'CASCADE')),
+	db.Column('permission_id', db.Integer, db.ForeignKey('permission.id', ondelete = 'CASCADE')),
+	db.UniqueConstraint('user_id', 'permission_id', name='uniqueindex')
+)
+
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key = True, nullable = False)
 	username = db.Column(db.String(20), unique = True, nullable = False)
@@ -17,12 +25,22 @@ class User(db.Model):
 	)
 	organization_id = db.Column(
 		db.Integer,
-		db.ForeignKey('organization.id', ondelete = 'SET NULL')
+		db.ForeignKey('organization.id', ondelete = 'SET NULL'),
+		nullable = True
+	)
+	permissions = db.relationship(
+		'Permission',
+		secondary = user_permissions,
+		backref = db.backref('users', lazy = 'dynamic')
 	)
 
 	def __init__(self, username, password):
 		self.username = username
 		self.password = password
+
+class Permission(db.Model):
+	id = db.Column(db.Integer, primary_key = True, nullable = False)
+	description = db.Column(db.String(200), nullable = False)
 
 class UserType(db.Model):
 	__tablename__ = 'user_type'

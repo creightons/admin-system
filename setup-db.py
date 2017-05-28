@@ -23,6 +23,20 @@ organization_data = [
 	{ 'id': 4, 'name': 'Data Denizens' },
 ]
 
+permission_data = [
+	{ 'id': 1, 'description': 'Permission 1' },
+	{ 'id': 2, 'description': 'Permission 2' },
+	{ 'id': 3, 'description': 'Permission 3' },
+]
+
+user_permission_data = [
+	{ 'user_id': 1, 'permission_id': 1 },
+	{ 'user_id': 1, 'permission_id': 2 },
+	{ 'user_id': 1, 'permission_id': 3 },
+	{ 'user_id': 2, 'permission_id': 3 },
+	{ 'user_id': 3, 'permission_id': 2 },
+]
+
 category_data = [
 	{ 'id': 1, 'name': 'Computers' },
 	{ 'id': 2, 'name': 'Sports' },
@@ -59,6 +73,20 @@ def add_users(db):
 			row
 		)
 
+def add_permissions(db):
+	for row in permission_data:
+		db.session.execute(
+			'insert into permission(id, description) values ( :id, :description )',
+			row
+		)
+
+def add_user_permission(db):
+	for row in user_permission_data:
+		db.session.execute(
+			'insert into user_permission(user_id, permission_id) values ( :user_id, :permission_id )',
+			row
+		)
+
 def add_user_types(db):
 	for row in user_type_data:
 		db.session.execute(
@@ -88,9 +116,12 @@ def add_products(db):
 		)
 
 def seed_database(db):
-	add_users(db)
+	# Tables inserts need to be ordered to avoid foreign key issues
 	add_user_types(db)
 	add_organizations(db)
+	add_users(db)
+	add_permissions(db)
+	add_user_permission(db)
 	add_categories(db)
 	add_products(db)
 	db.session.commit()
