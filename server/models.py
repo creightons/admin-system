@@ -13,9 +13,12 @@ class User(db.Model):
 		db.Integer,
 		db.ForeignKey('user_type.id'),
 		nullable = False,
-		default = SUPERUSER
+		default = SUPERUSER,
 	)
-	organization_id = db.Column(db.Integer, db.ForeignKey('organization.id'))
+	organization_id = db.Column(
+		db.Integer,
+		db.ForeignKey('organization.id', ondelete = 'SET NULL')
+	)
 
 	def __init__(self, username, password):
 		self.username = username

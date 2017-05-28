@@ -7,5 +7,6 @@ database_path = os.path.join(path, '../mydb.sqlite')
 
 app.config['DEBUG'] = 1
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + database_path
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 # Secret Key for session cookies
 app.secret_key = 'Session Secret Key'
