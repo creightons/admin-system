@@ -180,9 +180,15 @@ def apply_routes(app):
 
 	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
 	def edit_user(user_id):
-		form = EditUserForm()
-
 		user = User.query.filter_by(id = user_id).first()
+		user_permissions = { p.id : True for p in user.permissions }
+
+		permissions_options = [{
+			'description': p.description,
+			'checkbox': True if p.id in user_permissions else False,
+		} for p in Permission.query.all() ]
+
+		form = EditUserForm(permissions = permissions_options)
 		postback_url = '/edit-user/' + str(user_id)
 
 		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]

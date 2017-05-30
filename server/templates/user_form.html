@@ -1,5 +1,5 @@
 {% extends 'dashboard_layout.html' %}
-{% from 'macros.html' import form_frame, link_button, section_title, form_input %}
+{% from 'macros.html' import form_frame, link_button, section_title, form_input, option_form_field_list %}
 {% block content %}
 
 	{{ section_title('Edit User') }}
@@ -11,6 +11,7 @@
 		{{ form_input(form.last_name) }}
 		{{ form_input(form.password) }}
 		{{ form_input(form.organization) }}
+		{{ option_form_field_list(form.permissions) }}
 	{% endcall %}
 
 {% endblock %}
