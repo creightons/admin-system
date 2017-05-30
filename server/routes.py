@@ -2,7 +2,7 @@ from __future__ import print_function
 import sys
 from flask import render_template, request, session, redirect
 from database import db
-from models import User, Organization, Category, Product
+from models import User, Organization, Category, Product, Permission
 from main import app
 from middleware import is_authorized
 from forms import NewOrganizationForm, AddUserForm, EditUserForm, \
@@ -319,3 +319,8 @@ def apply_routes(app):
 			form = form,
 			postback_url = postback_url
 		)
+
+	@app.route('/permissions')
+	def show_permissions():
+		permissions = [	{ 'name': p.description } for p in Permission.query.all() ]
+		return render_template('permissions.html', permissions = permissions)

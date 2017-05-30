@@ -12,6 +12,7 @@
 			{{ page_link('Users', '/users') }}
 			{{ page_link('Categories', '/categories') }}
 			{{ page_link('Products', '/products') }}
+			{{ page_link('Permissions', '/permissions') }}
 		</ul>
 	</aside>
 {% endmacro %}
@@ -50,9 +51,11 @@
 				{{ item_details.name }}
 			</span>
 			<div class='item-list__button-row'>
-				<a class='item-list__link' href='{{ item_details.link }}'>
-					<button class='item-list__button {% if item_details.delete_link %} item-list--offset {% endif %}'>Edit</button>
-				</a>
+				{% if item_details.link %}
+					<a class='item-list__link' href='{{ item_details.link }}'>
+						<button class='item-list__button {% if item_details.delete_link %} item-list--offset {% endif %}'>Edit</button>
+					</a>
+				{% endif %}
 				{% if item_details.delete_link %}
 					<form method='POST' action='{{ item_details.delete_link }}'>
 						<button class='item-list__button' type='submit'>Delete</button>
