@@ -96,7 +96,9 @@
 	<ul>
 	{% for form_field in fields %}
 		<li>
-			<label>{{ form_field.form.description.data }}</label>
+			<label for = {{ form_field.form.checkbox.id }}>
+				{{ form_field.form.description.data }}
+			</label>
 			{{ form_field.form.checkbox }}
 		</li>
 	{% endfor %}
