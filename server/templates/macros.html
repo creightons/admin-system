@@ -96,6 +96,7 @@
 	<ul>
 	{% for form_field in fields %}
 		<li>
+			{{ form_field.csrf_token }}
 			<label for = {{ form_field.form.checkbox.id }}>
 				{{ form_field.form.description.data }}
 			</label>

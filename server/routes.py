@@ -185,6 +185,7 @@ def apply_routes(app):
 
 		permissions_options = [{
 			'description': p.description,
+			'field_id': p.id,
 			'checkbox': True if p.id in user_permissions else False,
 		} for p in Permission.query.all() ]
 
@@ -198,7 +199,7 @@ def apply_routes(app):
 			updates['username'] = form.username.data
 			updates['first_name'] = form.first_name.data
 			updates['last_name'] = form.last_name.data
-			updates['organization_id'] = form.organization.data
+			updates['organization_id'] = form.organization.data if form.organization.data > 0 else None
 
 			if form.password.data != '':
 				updates['password'] = form.password.data
@@ -214,6 +215,12 @@ def apply_routes(app):
 		form.last_name.data = user.last_name
 		form.organization.data = user.organization_id or NO_ORGANIZATION_ID
 
+		# Need to reset form field data after form.validate_on_submit() if it passes
+		for index, permission_form in enumerate(form.permissions):
+			permission_form.form.description.data = permissions_options[index]['description']
+			permission_form.form.checkbox.data = permissions_options[index]['checkbox']
+			permission_form.form.field_id.data = permissions_options[index]['field_id']
+
 		return render_template(
 			'user_form.html',
 			title = 'Edit User',
@@ -224,12 +231,10 @@ def apply_routes(app):
 
 	@app.route('/categories')
 	def show_categories():
-		categories = [
-			{
-				'name': c.name,
-				'link': '/edit-category/' + str(c.id),
-			} for c in Category.query.all()
-		]
+		categories = [{
+			'name': c.name,
+			'link': '/edit-category/' + str(c.id),
+		} for c in Category.query.all()]
 
 		return render_template('categories.html', categories = categories)
 
@@ -275,13 +280,8 @@ def apply_routes(app):
 
 	@app.route('/products')
 	def show_products():
-		products = [
-			{
-				'name': p.name,
-				'link': '/edit-product/' + str(p.id),
-			} for p in Product.query.all()
-		]
-
+		products = [ { 'name': p.name, 'link': '/edit-product/' + str(p.id) }
+			for p in Product.query.all()]
 		return render_template('products.html', products = products)
 
 	@app.route('/add-product', methods = ['GET', 'POST'])

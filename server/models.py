@@ -40,7 +40,7 @@ class User(db.Model):
 
 class Permission(db.Model):
 	id = db.Column(db.Integer, primary_key = True, nullable = False)
-	description = db.Column(db.String(200), nullable = False)
+	description = db.Column(db.String(200), nullable = False, unique = True)
 
 class UserType(db.Model):
 	__tablename__ = 'user_type'

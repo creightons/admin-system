@@ -23,6 +23,7 @@ class BooleanSubField(BooleanField):
 
 class OptionForm(FlaskForm):
 	description = HiddenField('Description')
+	field_id = HiddenField('Field Id')
 	checkbox = BooleanSubField('Member', default = False)
 
 # To add data to "organizations" when initializing an object from this class,
@@ -30,15 +31,6 @@ class OptionForm(FlaskForm):
 #	form = EditUserForm(organizations = list_of_dicts)
 # where:
 #	list_of_dicts = [ { 'description': <str>, 'checkbox': <bool> }, ... ]
-
-#class EditUserForm(FlaskForm):
-#	username = StringField('Username', validators = [InputRequired()])
-#	password = PasswordField('New Password')
-#	first_name = StringField('First Name')
-#	last_name = StringField('Last Name')
-#	organizations = FieldList(FormField(OptionForm))
-#	organization =
-
 class EditUserForm(FlaskForm):
 	username = StringField('Username', validators = [InputRequired()])
 	password = PasswordField('New Password')
