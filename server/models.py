@@ -34,13 +34,13 @@ class User(db.Model):
 		backref = db.backref('users', lazy = 'dynamic')
 	)
 
-	def __init__(self, username, password):
-		self.username = username
-		self.password = password
-
 class Permission(db.Model):
 	id = db.Column(db.Integer, primary_key = True, nullable = False)
 	description = db.Column(db.String(200), nullable = False, unique = True)
+
+	def __init__(self, id, description):
+		self.id = id
+		self.description = description
 
 class UserType(db.Model):
 	__tablename__ = 'user_type'

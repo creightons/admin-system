@@ -183,11 +183,12 @@ def apply_routes(app):
 		user = User.query.filter_by(id = user_id).first()
 		user_permissions = { p.id : True for p in user.permissions }
 
+		permissions = Permission.query.all()
 		permissions_options = [{
 			'description': p.description,
 			'field_id': p.id,
 			'checkbox': True if p.id in user_permissions else False,
-		} for p in Permission.query.all() ]
+		} for p in  permissions]
 
 		form = EditUserForm(permissions = permissions_options)
 		postback_url = '/edit-user/' + str(user_id)
@@ -200,6 +201,12 @@ def apply_routes(app):
 			updates['first_name'] = form.first_name.data
 			updates['last_name'] = form.last_name.data
 			updates['organization_id'] = form.organization.data if form.organization.data > 0 else None
+
+			# Make a map of the ids the user selected
+			user_perm_id_map = { int(permission_data['field_id']) : True
+				for permission_data in form.permissions.data if permission_data['checkbox'] == True }
+			# Grab the permissions that match the ones the user selected and asign them to the family
+			user.permissions =  [ p for p in permissions if p.id in user_perm_id_map ]
 
 			if form.password.data != '':
 				updates['password'] = form.password.data
@@ -220,6 +227,8 @@ def apply_routes(app):
 			permission_form.form.description.data = permissions_options[index]['description']
 			permission_form.form.checkbox.data = permissions_options[index]['checkbox']
 			permission_form.form.field_id.data = permissions_options[index]['field_id']
+
+		form.username
 
 		return render_template(
 			'user_form.html',
