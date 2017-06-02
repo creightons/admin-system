@@ -4,6 +4,8 @@
 	background-color: $primary;
 	padding: 0 $spacing-700;
 	@include box-shadow();
+	position: fixed;
+	top: 0;
 }
 
 .header__title {
