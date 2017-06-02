@@ -1,0 +1,13 @@
+{% extends 'dashboard_layout.html' %}
+{% import 'macros.html' as macros %}
+{% from 'macros.html' import form_frame, link_button, section_title, form_input, option_form_field_list %}
+{% block content %}
+
+	{{ section_title(title) }}
+	{{ link_button('Back', '/organizations') }}
+	{% call form_frame(postback_url) %}
+		{{ form_input(form.csrf_token) }}
+		{{ form_input(form.name) }}
+		{{ option_form_field_list(form.categories) }}
+	{% endcall %}
+{% endblock %}

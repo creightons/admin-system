@@ -1,9 +1,0 @@
-{% extends 'dashboard_layout.html' %}
-{% import 'macros.html' as macros %}
-{% block content %}
-
-	{{ macros.section_title('Edit Organization') }}
-	{{ macros.link_button('Back', '/organizations') }}
-	{{ macros.form(fields, postback_url) }}
-
-{% endblock %}

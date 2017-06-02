@@ -3,9 +3,6 @@ from wtforms import StringField, PasswordField, BooleanField, SelectField, \
 	HiddenField, FieldList, FormField
 from wtforms.validators import InputRequired
 
-class NewOrganizationForm(FlaskForm):
-	name = StringField('Name', validators = [InputRequired()])
-
 # Wraps the BooleanField class so that it may be used in
 # a FieldList object. See last comment in:
 #	 https://github.com/wtforms/wtforms/issues/308
@@ -16,15 +13,15 @@ class BooleanSubField(BooleanField):
         else:
             self.data = bool(value)
 
-
-# TODO: Use the commented out code as a model of implementing a multiselect
-# form with checkboxes.
-#
-
 class OptionForm(FlaskForm):
 	description = HiddenField('Description')
 	field_id = HiddenField('Field Id')
 	checkbox = BooleanSubField('Member', default = False)
+
+class OrganizationForm(FlaskForm):
+	name = StringField('Name', validators = [InputRequired()])
+	categories = FieldList(FormField(OptionForm))
+
 
 # To add data to "organizations" when initializing an object from this class,
 # call this class as:

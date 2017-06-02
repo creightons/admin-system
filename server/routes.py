@@ -5,7 +5,7 @@ from database import db
 from models import User, Organization, Category, Product, Permission
 from main import app
 from middleware import is_authorized
-from forms import NewOrganizationForm, AddUserForm, EditUserForm, \
+from forms import OrganizationForm, AddUserForm, EditUserForm, \
 	CategoryForm, ProductForm
 
 
@@ -58,7 +58,7 @@ def apply_routes(app):
 
 	@app.route('/organizations', methods = ['GET', 'POST'])
 	def organizations_page():
-		form = NewOrganizationForm()
+		form = OrganizationForm()
 		fields = [ form.name, form.csrf_token ]
 
 		if form.validate_on_submit():
@@ -85,18 +85,29 @@ def apply_routes(app):
 
 	@app.route('/add-organization', methods = ['GET', 'POST'])
 	def add_organization():
-		form = NewOrganizationForm()
-		fields = [ form.name, form.csrf_token ]
+		categories = Category.query.all()
+		category_options = [{
+			'description': c.name,
+			'field_id': c.id,
+			'checkbox': False,
+		} for c in categories]
+
+		form = OrganizationForm(formdata = request.form, categories = category_options)
 
 		if form.validate_on_submit():
 			new_organization = Organization(request.form['name'])
+			selected_category_map = { int(category_data['field_id']) : True
+				for category_data in form.categories.data if category_data['checkbox'] == True }
+			new_organization.categories = [ c for c in categories if c.id in selected_category_map ]
 			db.session.add(new_organization)
 			db.session.commit()
 			return redirect('/organizations')
 
 		return render_template(
-			'add_organization.html',
-			fields = fields
+			'organization_form.html',
+			postback_url = '/add-organization',
+			form = form,
+			title = 'Add Organization'
 		)
 
 	
@@ -110,31 +121,39 @@ def apply_routes(app):
 	@app.route('/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
 	def edit_organization(organization_id):
 		organization = Organization.query.filter_by(id = organization_id).first()
+		postback_url = '/edit-organization/' + str(organization_id)
 
 		if organization == None:
 			return render_template('404.html')
 
-		form = NewOrganizationForm()
-		fields = [ form.name, form.csrf_token ]
+		categories = Category.query.all()
+		category_options = [{
+			'description': c.name,
+			'field_id': c.id,
+			'checkbox': False,
+		} for c in categories]
+
+		form = OrganizationForm(formdata = request.form, categories = category_options)
 
 		if form.validate_on_submit():
-			updated_organization = Organization.query.filter_by(id = organization_id).update({
-				'name': form.name.data
-			})
+			organization.name = form.name.data
+
+			selected_category_map = { int(category_data['field_id']) : True
+				for category_data in form.categories.data if category_data['checkbox'] == True }
+			organization.categories = [ c for c in categories if c.id in selected_category_map ]
 
 			db.session.commit()
 
-			return redirect('/organizations')
+			return redirect(postback_url)
 
 		form.name.data = organization.name
-		fields = [ form.name, form.csrf_token ]
 
-		postback_url = '/edit-organization/' + str(organization_id)
 
 		return render_template(
-			'edit_organization.html',
-			fields = fields,
-			postback_url = postback_url
+			'organization_form.html',
+			form = form,
+			postback_url = postback_url,
+			title = 'Edit Organization'
 		)
 
 

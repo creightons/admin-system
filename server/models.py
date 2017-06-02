@@ -54,9 +54,23 @@ class UserType(db.Model):
 	def __init__(self, description):
 		self.description = description
 
+# Join table for Organizations and Categories
+organization_categories = db.Table(
+	'organization_categories',
+	db.Column('organization_id', db.Integer, db.ForeignKey('organization.id', ondelete = 'CASCADE')),
+	db.Column('category_id', db.Integer, db.ForeignKey('category.id', ondelete = 'CASCADE')),
+	db.UniqueConstraint('organization_id', 'category_id', name='organization_category_index')
+)
+
 class Organization(db.Model):
 	id = db.Column(db.Integer, primary_key = True, nullable = False)
 	name = db.Column(db.String(20), nullable = False)
+
+	categories = db.relationship(
+		'Category',
+		secondary = organization_categories,
+		backref = db.backref('organizations', lazy = 'dynamic')
+	)
 
 	def __init__(self, name):
 		self.name = name
@@ -77,3 +91,4 @@ class Category(db.Model):
 
 	def __init__(self, name):
 		self.name = name
+
