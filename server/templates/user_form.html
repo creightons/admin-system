@@ -2,7 +2,7 @@
 {% from 'macros.html' import form_frame, link_button, section_title, form_input, option_form_field_list %}
 {% block content %}
 
-	{{ section_title('Edit User') }}
+	{{ section_title( title ) }}
 	{{ link_button('Back', '/users') }}
 	{% call form_frame(postback_url) %}
 		{{ form_input(form.csrf_token) }}

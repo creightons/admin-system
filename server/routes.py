@@ -197,17 +197,16 @@ def apply_routes(app):
 			'checkbox': True if p.id in user_permissions else False,
 		} for p in  permissions]
 
-		form = EditUserForm(permissions = permissions_options)
+		form = EditUserForm(formdata = request.form, permissions = permissions_options)
 		postback_url = '/edit-user/' + str(user_id)
 
 		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]
 
 		if form.validate_on_submit():
-			updates = {}
-			updates['username'] = form.username.data
-			updates['first_name'] = form.first_name.data
-			updates['last_name'] = form.last_name.data
-			updates['organization_id'] = form.organization.data if form.organization.data > 0 else None
+			user.username = form.username.data
+			user.first_name = form.first_name.data
+			user.last_name = form.last_name.data
+			user.organization_id = form.organization.data
 
 			# Make a map of the ids the user selected
 			user_perm_id_map = { int(permission_data['field_id']) : True
@@ -216,9 +215,7 @@ def apply_routes(app):
 			user.permissions =  [ p for p in permissions if p.id in user_perm_id_map ]
 
 			if form.password.data != '':
-				updates['password'] = form.password.data
-
-			User.query.filter_by(id = user_id).update(updates)
+				user.password = form.password.data
 
 			db.session.commit()
 			return redirect(postback_url)
@@ -228,14 +225,6 @@ def apply_routes(app):
 		form.first_name.data = user.first_name
 		form.last_name.data = user.last_name
 		form.organization.data = user.organization_id or NO_ORGANIZATION_ID
-
-		# Need to reset form field data after form.validate_on_submit() if it passes
-		for index, permission_form in enumerate(form.permissions):
-			permission_form.form.description.data = permissions_options[index]['description']
-			permission_form.form.checkbox.data = permissions_options[index]['checkbox']
-			permission_form.form.field_id.data = permissions_options[index]['field_id']
-
-		form.username
 
 		return render_template(
 			'user_form.html',

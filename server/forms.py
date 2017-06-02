@@ -36,6 +36,7 @@ class EditUserForm(FlaskForm):
 	password = PasswordField('New Password')
 	first_name = StringField('First Name')
 	last_name = StringField('Last Name')
+	# organization stores an organization_id
 	organization = SelectField('Organization', coerce = int)
 	permissions = FieldList(FormField(OptionForm))
 
