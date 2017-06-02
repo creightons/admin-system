@@ -49,6 +49,7 @@ class AddUserForm(FlaskForm):
 		coerce = int,
 		validators = [InputRequired()]
 	)
+	permissions = FieldList(FormField(OptionForm))
 
 class CategoryForm(FlaskForm):
 	name = StringField('Name', validators = [InputRequired()])

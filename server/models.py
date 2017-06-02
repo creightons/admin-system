@@ -33,6 +33,9 @@ class User(db.Model):
 		secondary = user_permissions,
 		backref = db.backref('users', lazy = 'dynamic')
 	)
+	def __init__(self, username, password):
+		self.username = username
+		self.password = password
 
 class Permission(db.Model):
 	id = db.Column(db.Integer, primary_key = True, nullable = False)

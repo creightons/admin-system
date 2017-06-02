@@ -147,24 +147,31 @@ def apply_routes(app):
 
 	@app.route('/add-user', methods = ['GET', 'POST'])
 	def add_user():
-		form = AddUserForm()
+		permissions = Permission.query.all()
+
+		permissions_options = [{
+			'description': p.description,
+			'field_id': p.id,
+			'checkbox': False,
+		} for p in  permissions]
+
+		form = AddUserForm(formdata = request.form, permissions = permissions_options)
 		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]
-		fields = [
-			form.username,
-			form.password,
-			form.first_name,
-			form.last_name,
-			form.csrf_token,
-		]
 
 		if form.validate_on_submit():
 			new_user = User(request.form['username'], request.form['password'])
 			new_user.first_name = request.form['first_name']
 			new_user.last_name = request.form['last_name']
-			if form.organization.data is not None:
-				new_user.organization_id = form.organization.data
-			else:
+			if form.organization.data == 0:
 				new_user.organization_id = None
+			else:
+				new_user.organization_id = form.organization.data
+
+			# Make a map of the ids the user selected
+			user_perm_id_map = { int(permission_data['field_id']) : True
+				for permission_data in form.permissions.data if permission_data['checkbox'] == True }
+			# Grab the permissions that match the ones the user selected and asign them to the family
+			new_user.permissions =  [ p for p in permissions if p.id in user_perm_id_map ]
 
 			db.session.add(new_user)
 			db.session.commit()

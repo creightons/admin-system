@@ -96,12 +96,13 @@
 	<ul>
 	{% for form_field in fields %}
 		<li>
-			{{ form_field.csrf_token }}
-			{{ form_field.field_id }}
+			{{ form_field.form.csrf_token }}
+			{{ form_field.form.checkbox }}
+			{{ form_field.form.field_id }}
 			<label for = {{ form_field.form.checkbox.id }}>
+				{{ form_field.form.description }}
 				{{ form_field.form.description.data }}
 			</label>
-			{{ form_field.form.checkbox }}
 		</li>
 	{% endfor %}
 	</ul>
