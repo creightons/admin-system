@@ -123,6 +123,8 @@ def apply_routes(app):
 		organization = Organization.query.filter_by(id = organization_id).first()
 		postback_url = '/edit-organization/' + str(organization_id)
 
+                current_categories = { c.id : True for c in organization.categories }
+
 		if organization == None:
 			return render_template('404.html')
 
@@ -130,7 +132,7 @@ def apply_routes(app):
 		category_options = [{
 			'description': c.name,
 			'field_id': c.id,
-			'checkbox': False,
+			'checkbox': True if c.id in current_categories else False,
 		} for c in categories]
 
 		form = OrganizationForm(formdata = request.form, categories = category_options)
