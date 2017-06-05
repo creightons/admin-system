@@ -356,3 +356,7 @@ def apply_routes(app):
 	def show_permissions():
 		permissions = [	{ 'name': p.description } for p in Permission.query.all() ]
 		return render_template('permissions.html', permissions = permissions)
+
+        @app.route('/main')
+        def customer_page():
+            return render_template('customer_page.html')

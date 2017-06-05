@@ -4,3 +4,4 @@ mydb.sqlite
 plan.txt
 node_modules
 server/static/build.css
+server/static/build.js
