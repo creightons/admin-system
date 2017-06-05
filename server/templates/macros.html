@@ -1,5 +1,5 @@
 {% macro page_link(name, url) %}
-	<a href='{{url}}' class='sidebar__link'>
+	<a href='{{ url }}' class='sidebar__link'>
 		<li>{{name}}</li>
 	</a>
 {% endmacro %}
@@ -7,12 +7,12 @@
 {% macro sidebar() %}
 	<aside class='sidebar'>
 		<ul class='sidebar__links'>
-			{{ page_link('Dashboard', '/dashboard') }}
-			{{ page_link('Organizations', '/organizations') }}
-			{{ page_link('Users', '/users') }}
-			{{ page_link('Categories', '/categories') }}
-			{{ page_link('Products', '/products') }}
-			{{ page_link('Permissions', '/permissions') }}
+                        {{ page_link('Dashboard', url_for('dashboard') ) }}
+                        {{ page_link('Organizations', url_for('show_organizations')) }}
+                        {{ page_link('Users', url_for('show_users')) }}
+                        {{ page_link('Categories', url_for('show_categories')) }}
+			{{ page_link('Products', url_for('show_products')) }}
+			{{ page_link('Permissions', url_for('show_permissions')) }}
 		</ul>
 	</aside>
 {% endmacro %}

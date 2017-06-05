@@ -1,6 +1,6 @@
 from __future__ import print_function
 import sys
-from flask import render_template, request, session, redirect
+from flask import render_template, request, session, redirect, url_for
 from database import db
 from models import User, Organization, Category, Product, Permission
 from main import app
@@ -32,15 +32,15 @@ def apply_routes(app):
 		).first()
 
 		if user == None:
-			return redirect('/')
+			return redirect(url_for('index'))
 		else:
 			session['username'] = request.form['username']
-			return redirect('/dashboard')
+			return redirect(url_for('dashboard'))
 
 	@app.route('/logout', methods = ['GET'])
 	def logout():
 		session.pop('username', None)
-		return redirect('/')
+		return redirect(url_for('index'))
 
 	@app.route('/dashboard', methods = ['GET'])
 	@is_authorized
@@ -57,7 +57,7 @@ def apply_routes(app):
 		)
 
 	@app.route('/organizations', methods = ['GET', 'POST'])
-	def organizations_page():
+	def show_organizations():
 		form = OrganizationForm()
 		fields = [ form.name, form.csrf_token ]
 
@@ -65,14 +65,14 @@ def apply_routes(app):
 			new_organization = Organization(request.form['name'])
 			db.session.add(new_organization)
 			db.session.commit()
-			return redirect('/dashboard')
+			return redirect(url_for('dashboard'))
 
 		organizations = Organization.query.all()
 		organization_list = [
 			{
 				'name': org.name,
-				'link': '/edit-organization/' + str(org.id),
-				'delete_link': '/delete-organization/' + str(org.id),
+                                'link': url_for('edit_organization', organization_id = org.id),
+				'delete_link': url_for('delete_organization', organization_id = org.id)
 			} for org in organizations
 		]
 
@@ -101,11 +101,11 @@ def apply_routes(app):
 			new_organization.categories = [ c for c in categories if c.id in selected_category_map ]
 			db.session.add(new_organization)
 			db.session.commit()
-			return redirect('/organizations')
+			return redirect(url_for('show_organizations'))
 
 		return render_template(
 			'organization_form.html',
-			postback_url = '/add-organization',
+			postback_url = url_for('add_organization'),
 			form = form,
 			title = 'Add Organization'
 		)
@@ -116,12 +116,12 @@ def apply_routes(app):
 		organization = Organization.query.filter_by(id = organization_id).first()
 		db.session.delete(organization)
 		db.session.commit()
-		return redirect('/organizations')
+		return redirect(url_for('show_organizations'))
 
 	@app.route('/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
 	def edit_organization(organization_id):
 		organization = Organization.query.filter_by(id = organization_id).first()
-		postback_url = '/edit-organization/' + str(organization_id)
+		postback_url = url_for('edit_organization', organization_id = organization_id)
 
                 current_categories = { c.id : True for c in organization.categories }
 
@@ -162,7 +162,7 @@ def apply_routes(app):
 	@app.route('/users', methods = ['GET'])
 	def show_users():
 		users = User.query.all()
-		user_list = [ { 'name': u.username , 'link': '/edit-user/' + str(u.id) }
+		user_list = [ { 'name': u.username , 'link': url_for('edit_user', user_id = u.id) }
 			for u in users ]
 		return render_template('users.html', users = user_list)
 
@@ -196,13 +196,13 @@ def apply_routes(app):
 
 			db.session.add(new_user)
 			db.session.commit()
-			return redirect('/users')
+			return redirect(url_for('show_users'))
 
 		return render_template(
 			'user_form.html',
 			title = 'Add User',
 			form = form,
-			postback_url = '/add-user'
+			postback_url = url_for('add_user')
 		)
 
 
@@ -219,7 +219,7 @@ def apply_routes(app):
 		} for p in  permissions]
 
 		form = EditUserForm(formdata = request.form, permissions = permissions_options)
-		postback_url = '/edit-user/' + str(user_id)
+		postback_url = url_for('edit_user', user_id = user_id)
 
 		form.organization.choices = BLANK_CHOICE + [ (o.id, o.name) for o in Organization.query.all() ]
 
@@ -227,7 +227,7 @@ def apply_routes(app):
 			user.username = form.username.data
 			user.first_name = form.first_name.data
 			user.last_name = form.last_name.data
-			user.organization_id = form.organization.data
+			user.organization_id = None if form.organization.data == 0 else form.organization.data
 
 			# Make a map of the ids the user selected
 			user_perm_id_map = { int(permission_data['field_id']) : True
@@ -259,7 +259,7 @@ def apply_routes(app):
 	def show_categories():
 		categories = [{
 			'name': c.name,
-			'link': '/edit-category/' + str(c.id),
+			'link': url_for('edit_category', category_id = c.id),
 		} for c in Category.query.all()]
 
 		return render_template('categories.html', categories = categories)
@@ -273,13 +273,13 @@ def apply_routes(app):
 			category = Category(form.name.data)
 			db.session.add(category)
 			db.session.commit()
-			return redirect('/categories')
+			return redirect(url_for('show_categories'))
 
 		return render_template(
 			'category_form.html',
 			title = 'Add Category',
 			form = form,
-			postback_url = '/add-category'
+			postback_url = url_for('add_category')
 		)
 
 
@@ -287,12 +287,12 @@ def apply_routes(app):
 	def edit_category(category_id):
 		form = CategoryForm()
 		category = Category.query.filter_by(id = category_id).first()
-		postback_url = '/edit-category/' + str(category_id)
+                postback_url = url_for('edit_category', category_id = category_id)
 
 		if form.validate_on_submit():
 			category.name = form.name.data
 			db.session.commit()
-			return redirect('/categories')
+			return redirect(url_for('show_categories'))
 
 
 		form.name.data = category.name
@@ -306,7 +306,7 @@ def apply_routes(app):
 
 	@app.route('/products')
 	def show_products():
-		products = [ { 'name': p.name, 'link': '/edit-product/' + str(p.id) }
+		products = [ { 'name': p.name, 'link': url_for('edit_product', product_id = p.id) }
 			for p in Product.query.all()]
 		return render_template('products.html', products = products)
 
@@ -319,13 +319,13 @@ def apply_routes(app):
 			product = Product(form.name.data, form.category.data)
 			db.session.add(product)
 			db.session.commit()
-			return redirect('/products')
+			return redirect(url_for('show_products'))
 
 		return render_template(
 			'product_form.html',
 			title = 'Add Product',
 			form = form,
-			postback_url = '/add-product'
+			postback_url = url_for('add_product')
 		)
 
 
@@ -334,13 +334,13 @@ def apply_routes(app):
 		form = ProductForm()
 		form.category.choices = [ (c.id, c.name) for c in Category.query.all() ]
 		product = Product.query.filter_by(id = product_id).first()
-		postback_url = '/edit-product/' + str(product_id)
+                postback_url = url_for('edit_product', product_id = product_id)
 
 		if form.validate_on_submit():
 			product.name = form.name.data
 			product.category_id = form.category.data
 			db.session.commit()
-			return redirect('/products')
+			return redirect(url_for('show_products'))
 
 		form.name.data = product.name
 		form.category.data = product.category_id

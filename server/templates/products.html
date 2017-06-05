@@ -2,6 +2,6 @@
 {% from 'macros.html' import item_list, link_button, section_title, form_input %}
 {% block content %}
 	{{ section_title('Products') }}
-	{{ link_button('Add Product', '/add-product') }}
+	{{ link_button('Add Product', url_for('add_product')) }}
 	{{ item_list(products) }}
 {% endblock %}

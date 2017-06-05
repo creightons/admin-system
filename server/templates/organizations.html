@@ -2,6 +2,6 @@
 {$ import 'macros.html' as macros %} 
 {% block content %}
 	{{ macros.section_title('Current Organizations') }}
-	{{ macros.link_button('Add Organization', '/add-organization') }}
+	{{ macros.link_button('Add Organization', url_for('add_organization')) }}
 	{{ macros.item_list(organizations) }}
 {% endblock %}

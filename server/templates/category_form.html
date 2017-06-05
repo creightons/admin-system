@@ -3,7 +3,7 @@
 {% block content %}
 
 	{{ section_title(title) }}
-	{{ link_button('Back', '/categories') }}
+	{{ link_button('Back', url_for('show_categories')) }}
 	{% call form_frame(postback_url) %}
 		{{ form_input(form.csrf_token) }}
 		{{ form_input(form.name) }}
