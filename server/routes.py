@@ -20,11 +20,17 @@ BLANK_CHOICE = [ (NO_ORGANIZATION_ID, '(None)') ]
 
 def apply_routes(app):
 
-	@app.route('/', methods = ['GET'])
+        @app.route('/')
+        def customer_page():
+            return render_template('customer_page.html')
+
+	@app.route('/admin', methods = ['GET'])
+	@is_authorized
 	def index():
 		return render_template('index.html')
 
-	@app.route('/login', methods = ['POST'])
+	@app.route('/admin/login', methods = ['POST'])
+	@is_authorized
 	def login():
 		user = User.query.filter_by(
 			username = request.form['username'],
@@ -37,12 +43,13 @@ def apply_routes(app):
 			session['username'] = request.form['username']
 			return redirect(url_for('dashboard'))
 
-	@app.route('/logout', methods = ['GET'])
+	@app.route('/admin/logout', methods = ['GET'])
+	@is_authorized
 	def logout():
 		session.pop('username', None)
 		return redirect(url_for('index'))
 
-	@app.route('/dashboard', methods = ['GET'])
+	@app.route('/admin/dashboard', methods = ['GET'])
 	@is_authorized
 	def dashboard():
 		users = User.query.all()
@@ -56,7 +63,8 @@ def apply_routes(app):
 			organization_list = organization_list
 		)
 
-	@app.route('/organizations', methods = ['GET', 'POST'])
+	@app.route('/admin/organizations', methods = ['GET', 'POST'])
+	@is_authorized
 	def show_organizations():
 		form = OrganizationForm()
 		fields = [ form.name, form.csrf_token ]
@@ -83,7 +91,8 @@ def apply_routes(app):
 			form = form
 		)
 
-	@app.route('/add-organization', methods = ['GET', 'POST'])
+	@app.route('/admin/add-organization', methods = ['GET', 'POST'])
+	@is_authorized
 	def add_organization():
 		categories = Category.query.all()
 		category_options = [{
@@ -111,14 +120,16 @@ def apply_routes(app):
 		)
 
 	
-	@app.route('/delete-organization/<int:organization_id>', methods = ['POST'])
+	@app.route('/admin/delete-organization/<int:organization_id>', methods = ['POST'])
+	@is_authorized
 	def delete_organization(organization_id):
 		organization = Organization.query.filter_by(id = organization_id).first()
 		db.session.delete(organization)
 		db.session.commit()
 		return redirect(url_for('show_organizations'))
 
-	@app.route('/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
+	@app.route('/admin/edit-organization/<int:organization_id>', methods = ['GET', 'POST'])
+	@is_authorized
 	def edit_organization(organization_id):
 		organization = Organization.query.filter_by(id = organization_id).first()
 		postback_url = url_for('edit_organization', organization_id = organization_id)
@@ -159,14 +170,16 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/users', methods = ['GET'])
+	@app.route('/admin/users', methods = ['GET'])
+	@is_authorized
 	def show_users():
 		users = User.query.all()
 		user_list = [ { 'name': u.username , 'link': url_for('edit_user', user_id = u.id) }
 			for u in users ]
 		return render_template('users.html', users = user_list)
 
-	@app.route('/add-user', methods = ['GET', 'POST'])
+	@app.route('/admin/add-user', methods = ['GET', 'POST'])
+	@is_authorized
 	def add_user():
 		permissions = Permission.query.all()
 
@@ -206,7 +219,8 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/edit-user/<int:user_id>', methods = ['GET', 'POST'])
+	@app.route('/admin/edit-user/<int:user_id>', methods = ['GET', 'POST'])
+	@is_authorized
 	def edit_user(user_id):
 		user = User.query.filter_by(id = user_id).first()
 		user_permissions = { p.id : True for p in user.permissions }
@@ -255,7 +269,8 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/categories')
+	@app.route('/admin/categories')
+	@is_authorized
 	def show_categories():
 		categories = [{
 			'name': c.name,
@@ -265,7 +280,8 @@ def apply_routes(app):
 		return render_template('categories.html', categories = categories)
 
 
-	@app.route('/add-category', methods = ['GET', 'POST'])
+	@app.route('/admin/add-category', methods = ['GET', 'POST'])
+	@is_authorized
 	def add_category():
 		form = CategoryForm()
 
@@ -283,7 +299,8 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/edit-category/<int:category_id>', methods = ['GET', 'POST'])
+	@app.route('/admin/edit-category/<int:category_id>', methods = ['GET', 'POST'])
+	@is_authorized
 	def edit_category(category_id):
 		form = CategoryForm()
 		category = Category.query.filter_by(id = category_id).first()
@@ -304,13 +321,15 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/products')
+	@app.route('/admin/products')
+	@is_authorized
 	def show_products():
 		products = [ { 'name': p.name, 'link': url_for('edit_product', product_id = p.id) }
 			for p in Product.query.all()]
 		return render_template('products.html', products = products)
 
-	@app.route('/add-product', methods = ['GET', 'POST'])
+	@app.route('/admin/add-product', methods = ['GET', 'POST'])
+	@is_authorized
 	def add_product():
 		form = ProductForm()
 		form.category.choices = [ (c.id, c.name) for c in Category.query.all() ]
@@ -329,7 +348,8 @@ def apply_routes(app):
 		)
 
 
-	@app.route('/edit-product/<int:product_id>', methods = ['GET', 'POST'])
+	@app.route('/admin/edit-product/<int:product_id>', methods = ['GET', 'POST'])
+	@is_authorized
 	def edit_product(product_id):
 		form = ProductForm()
 		form.category.choices = [ (c.id, c.name) for c in Category.query.all() ]
@@ -352,11 +372,9 @@ def apply_routes(app):
 			postback_url = postback_url
 		)
 
-	@app.route('/permissions')
+	@app.route('/admin/permissions')
+	@is_authorized
 	def show_permissions():
 		permissions = [	{ 'name': p.description } for p in Permission.query.all() ]
 		return render_template('permissions.html', permissions = permissions)
 
-        @app.route('/main')
-        def customer_page():
-            return render_template('customer_page.html')
