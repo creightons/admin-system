@@ -1,30 +1,28 @@
-from flask import Blueprint, session, request
-from flask_restful import Api, Resource
+from flask import session, request
+from flask.views import MethodView
 from models import User
 
-api_blueprint = Blueprint('api', __name__)
-api = Api(api_blueprint)
-
-# Handles user logins and logouts
-class Session(Resource):
+class SessionAPI(MethodView):
     def post(self):
         json_data = request.get_json()
-        if ('password' in json_data) and ('username') in json_data:
+
+        if ('password' in json_data) and ('username' in json_data):
             user = User.query.filter_by(
-                    username = json_data['password'],
-                    password = json_data['username']
+                    username = json_data['username'],
+                    password = json_data['password']
             ).first()
 
-            if user is None:
-                session['username'] = username
+            if user is not None:
+                session['username'] = json_data['username']
                 return '', 200
             else:
-                return '', 400
+                return 'error: no user found', 400
 
-        return '', 400
+        return 'error: missing credentials', 400
 
-    def delete():
+    def delete(self):
         session.pop('username', None)
         return '', 200
 
-api.add_resource(Session, '/api/session')
+def apply_routes(app):
+    app.add_url_rule('/api/session', view_func = SessionAPI.as_view('sessions'))

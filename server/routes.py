@@ -25,12 +25,10 @@ def apply_routes(app):
             return render_template('customer_page.html')
 
 	@app.route('/admin', methods = ['GET'])
-	@is_authorized
 	def index():
 		return render_template('index.html')
 
 	@app.route('/admin/login', methods = ['POST'])
-	@is_authorized
 	def login():
 		user = User.query.filter_by(
 			username = request.form['username'],
@@ -44,7 +42,6 @@ def apply_routes(app):
 			return redirect(url_for('dashboard'))
 
 	@app.route('/admin/logout', methods = ['GET'])
-	@is_authorized
 	def logout():
 		session.pop('username', None)
 		return redirect(url_for('index'))
