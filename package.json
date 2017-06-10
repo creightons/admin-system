@@ -4,10 +4,10 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "watch:css": "nodemon -e scss -x \"npm run build:css\" ",
-    "build:css": "node-sass scss/index.scss --source-map-embed server/static/build.css",
-    "start:webpack": "webpack --watch",
-    "build:webpack": "webpack -p"
+    "watch:admin": "nodemon -e scss -x \"npm run build:admin\" ",
+    "build:admin": "node-sass scss/admin/index.scss --source-map-embed server/static/admin.css",
+    "watch:main": "webpack --watch",
+    "build:main": "webpack -p"
   },
   "repository": {
     "type": "git",
@@ -21,11 +21,14 @@
   },
   "homepage": "https://github.com/creightons/admin-system#readme",
   "dependencies": {
+    "css-loader": "0.28.4",
+    "extract-text-webpack-plugin": "2.1.2",
     "node-sass": "4.5.2",
     "nodemon": "1.11.0",
     "react": "15.5.4",
     "react-dom": "15.5.4",
     "react-router-dom": "4.1.1",
+    "sass-loader": "6.0.5",
     "webpack": "2.6.1"
   },
   "devDependencies": {

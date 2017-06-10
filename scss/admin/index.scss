@@ -1,9 +1,10 @@
 // Import reset and constants before actual styling is applied
-@import 'reset';
-@import 'constants';
+@import '../vendor/reset';
+@import '../utils/constants';
 
 // Main styles
 @import 'main';
+
 @import 'header';
 @import 'sidebar';
 @import 'content';
